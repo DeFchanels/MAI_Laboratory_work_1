@@ -1,0 +1,38 @@
+{
+    "distance": {
+        "can_be_negative": 0,
+        "units": {
+            "mm": "0.001",
+            "cm": "0.01",
+            "dm": "0.1",
+            "m": "1.0", 
+            "km": "1000.0"
+        }
+    },
+    "mass": {
+        "can_be_negative": 0,
+        "units": {
+            "mg": "0.000001",
+            "g": "0.001",
+            "kg": "1.0",
+            "t": "1000.0"
+        }
+    },
+    "temperature": {
+        "can_be_negative": 1,
+        "units": {
+            "c": {
+                "divisor": "1.0",
+                "addition": "0.0"
+            },
+            "k": {
+                "divisor": "1.0",
+                "addition": "-273.15"
+            },
+            "f": {
+                "divisor": "1.8",
+                "addition": "-32.0"
+            }
+        }
+    }
+}
