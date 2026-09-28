@@ -1,9 +1,8 @@
+import decimal
 import json
 import sys
 from decimal import Decimal
-import decimal
 from pathlib import Path
-
 
 current_dir = Path(__file__).parent # Получаем путь к папке, в которой лежит текущий файл
 table_path = current_dir / 'convertion_table.json' # Формируем точный путь к таблице конвертаций
@@ -16,8 +15,8 @@ def get_category(unit):
     Accepts a single unit of measurement as input;
     Returns its category.
     """
-    for category in convertion_table.keys(): # Цикл по категориям
-        if unit in convertion_table[category]['units'].keys(): # Если еденица измерения в категории то возвращаем эту категорию
+    for category in convertion_table: # Цикл по категориям
+        if unit in convertion_table[category]['units']: # Если еденица измерения в категории то возвращаем эту категорию
             return category
     print("Unknown unit of measurement", file=sys.stderr) # Если еденица измерения не найдена в данных
     sys.exit(2)

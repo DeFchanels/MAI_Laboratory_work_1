@@ -1,7 +1,9 @@
+import sys
+
+import pytest
+
 from toolkit import calculator
 from toolkit.__main__ import main
-import pytest
-import sys
 
 
 def test_cli_1(capsys, monkeypatch):

@@ -1,9 +1,9 @@
-from itertools import product
-from decimal import Decimal
 import decimal
+import re
 import string
 import sys
-import re
+from decimal import Decimal
+from itertools import product
 
 
 def processing_errors(expression): # Функция, валидирующая данные (Validation)
@@ -58,7 +58,7 @@ def rindex(li, symbol): # Функция для нахождения самог�
     Returns the rightmost index of the symbol in the list.
     """
     res = ''
-    for i in range(0, len(li)):
+    for i in range(len(li)):
         if li[i] == symbol:
             res = i
     if res != '': return res
@@ -73,7 +73,7 @@ def basic_operations(expression): # Функция калькуляции выр
     expression = processing_brackets(expression) # Обрабатываем скобки в выражении
     while any(x in expression for x in ['*', '/', '//', '%']): # Цикл, повторяющийся пока есть операции с наивысшим приоритетом
         expression = process_negative_and_positive_numbers(expression) # Обрабатываем плюсы и минусы после знаков умножения и деления
-        for i in range(0, len(expression)):
+        for i in range(len(expression)):
             if expression[i] in ['*', '/', '//', '%']:
                 if i == 0 or i == len(expression) - 1: # Если оператор это первый или последний символ в выражении
                     raise SyntaxError('Incorrect syntaxis')
@@ -92,7 +92,7 @@ def basic_operations(expression): # Функция калькуляции выр
                             expression = expression[:i - 1] + [str(Decimal(expression[i - 1]) % Decimal(expression[i + 1]))] + expression[i + 2:]
                             break
     while len(expression) > 1: # Цикл, повторяющийся пока выражение не досчитано до конца
-        for i in range(0, len(expression)):
+        for i in range(len(expression)):
             if expression[i] in '+-':
                 if i == 0 or i == len(expression) - 1: # Если оператор это первый или последний символ в выражении
                     raise SyntaxError('Incorrect syntaxis')
@@ -115,14 +115,14 @@ def process_negative_and_positive_numbers(expression): # Функция для �
     Returns it with processed unary numbers near division, multiplication or modulo
     """
     for i in range(2, len(expression) - 1):
-        if expression[i] == '/' or expression[i] == '*' or expression[i] == '//' or expression[i] == '%':
-            if expression[i - 2] == '-' or expression[i - 2] == '+':
-                if not((i - 3 >= 0) and (expression[i - 3][-1] in '1234567890)')):
-                    expression[i - 1] = expression[i - 2] + expression[i - 1]
-                    expression.pop(i - 2)
+        if (expression[i] == '/' or expression[i] == '*' or expression[i] == '//' or expression[i] == '%') and \
+                (expression[i - 2] == '-' or expression[i - 2] == '+') and \
+                not((i - 3 >= 0) and (expression[i - 3][-1] in '1234567890)')):
+            expression[i - 1] = expression[i - 2] + expression[i - 1]
+            expression.pop(i - 2)
     for i in range(len(expression) - 2):
-        if (expression[i] == '/' or expression[i] == '*' or expression[i] == '//' or expression[i] == '%') and expression[i + 2] != '(':
-            if expression[i + 1] == '-' or expression[i + 1] == '+':
+        if ((expression[i] == '/' or expression[i] == '*' or expression[i] == '//' or expression[i] == '%') and expression[i + 2] != '(') and \
+            (expression[i + 1] == '-' or expression[i + 1] == '+'):
                 expression[i + 2] = expression[i + 1] + expression[i + 2]
                 expression.pop(i + 1)
     return expression
@@ -138,8 +138,8 @@ def process_input(input_expression): # Функция, токенизирующ�
     input_expression = re.sub(r'\+\s*-', '-', input_expression) # Заменяем двойные знаки (знак, и потом унарный знак) на одинарные
     input_expression = re.sub(r'\-\s*\+', '-', input_expression)
     for n in '0987654321':
-        input_expression = re.sub(r'\+\s*\+\s*({}|\()'.format(n), r'+\1', input_expression) # Если после двойного знака есть число либо открывающая скобка, значит обрабатываем это как один знак
-        input_expression = re.sub(r'-\s*-\s*({}|\()'.format(n), r'+\1', input_expression)
+        input_expression = re.sub(rf'\+\s*\+\s*({n}|\()', r'+\1', input_expression) # Если после двойного знака есть число либо открывающая скобка, значит обрабатываем это как один знак
+        input_expression = re.sub(rf'-\s*-\s*({n}|\()', r'+\1', input_expression)
     input_expression = re.sub(r'\+\s*\+', '+1', input_expression) # В ином случае это либо инкремент, либо декремент
     input_expression = re.sub(r'-\s*-', '-1', input_expression)
     processed_list = re.split(r'(//|[/|(|)|\+|\-|\*|%|\s])', input_expression) # Разделяем строчку по всем символам знаков и знаку пробела
