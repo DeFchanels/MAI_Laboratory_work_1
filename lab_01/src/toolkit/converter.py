@@ -28,10 +28,14 @@ def processing_errors(input_value, unit_from, category_from, category_to): # Ф�
     Accepts a value, an initial unit of measurement, and the categories of the initial and target units of measurement;
     Terminates code with an error message if any issues arise, or returns 0 otherwise.
     """
-    if not any(x in input_value for x in '0987654321'):
+    if not input_value:
         print("Empty input", file=sys.stderr) # Если ввод пуст
         sys.exit(2)
-    input_value = Decimal(input_value)
+    try:
+        input_value = Decimal(input_value)
+    except decimal.InvalidOperation:
+        print("Invalid input", file=sys.stderr)
+        sys.exit(2)
     if category_to != category_from: # Если не совпадают категории едениц измерения
         print("Mismatched unit categories", file=sys.stderr) # Если категории едениц измерения не совпадают
         sys.exit(2)

@@ -19,6 +19,10 @@ def processing_errors(expression): # Функция, валидирующая д
         print("Empty brackets error", file=sys.stderr)
         sys.exit(2)
 
+    if '..' in expression:
+        print("Incorrect float value", file=sys.stderr)
+        sys.exit(2)
+
     for p in product('0123456789', repeat=2): # Обработка пропущеного оператора между цифрами
         if ' '.join(p) in expression:
             print("No operator error", file=sys.stderr)
